@@ -1,0 +1,137 @@
+---
+vagrantfile-local:
+    vm:
+        box: debian-wheezy72-x64-vbox43
+        box_url: 'http://box.puphpet.com/debian-wheezy72-x64-vbox43.box'
+        hostname: debian-dev-box
+        network:
+            private_network: 192.168.42.42
+            forwarded_port:
+                bseC30sGMCPZ:
+                    host: '8082'
+                    guest: '80'
+        provider:
+            virtualbox:
+                modifyvm:
+                    natdnshostresolver1: on
+                    memory: '512'
+                setextradata:
+                    VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root: 1
+        provision:
+            puppet:
+                manifests_path: provision/puppet
+                manifest_file: manifest.pp
+                options:
+                    - '--verbose'
+                    - '--hiera_config /vagrant/provision/puppet/hiera.yaml'
+                    - '--parser future'
+        synced_folder:
+            jr2So9N12LMX:
+                id: vagrant-root
+                source: ./
+                target: /var/www
+                nfs: 'false'
+        usable_port_range: 2200..2250
+    ssh:
+        host: null
+        port: null
+        private_key_path: null
+        username: vagrant
+        guest_port: null
+        keep_alive: true
+        forward_agent: false
+        forward_x11: false
+        shell: 'bash -l'
+    vagrant:
+        host: detect
+server:
+    packages:
+        - vim
+        - git-flow
+        - curl
+        - wget
+        - build-essential
+        - tree
+        - sqlite3
+    dot_files:
+        -
+            bash_aliases: null
+    _prevent_empty: ''
+apache:
+    modules:
+        - php
+        - rewrite
+    vhosts:
+        DjcUuf1NlvZE:
+            servername: dev
+            serveraliases:
+                - dev.local
+            docroot: /var/www/dev
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            override:
+                - All
+        55QpcTJPRcgh:
+            servername: phpmyadmin
+            serveraliases:
+                - db.dev
+                - db.local
+            docroot: /var/www/phpmyadmin
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+    user: www-data
+    group: www-data
+    default_vhost: true
+    mpm_module: prefork
+    mod_pagespeed: 0
+    mod_spdy: 0
+php:
+    version: '55'
+    composer: '1'
+    modules:
+        php:
+            - cli
+            - curl
+            - intl
+            - mcrypt
+            - memcached
+            - sqlite
+            - xsl
+        pear: {  }
+        pecl:
+            - pecl_http
+    ini:
+        display_errors: On
+        error_reporting: '-1'
+        session.save_path: /var/lib/php/session
+    timezone: America/New_York
+mysql:
+    root_password: local
+    phpmyadmin: '1'
+    adminer: 0
+    databases:
+        qKPbmnzNXbD3:
+            grant:
+                - ALL
+            name: dev_local
+            host: localhost
+            user: dev
+            password: local
+            sql_file: ''
+mongodb:
+    install: 0
+    auth: 1
+    port: '27017'
+    databases: {  }
+beanstalkd:
+    install: 0
+    listenaddress: 0.0.0.0
+    listenport: '13000'
+    maxjobsize: '65535'
+    maxconnections: '1024'
+    binlogdir: /var/lib/beanstalkd/binlog
+    binlogfsync: null
+    binlogsize: '10485760'
+
